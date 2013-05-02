@@ -106,7 +106,9 @@ if __name__ == "__main__":
     colors = expand_mappings(file_contents, mapping)
     name = splitext(basename(vim_file))[0]
     client = gconf.client_get_default()
-    profile_path = "/apps/gnome-terminal/profiles/%s/" % name
+    gtp = "/apps/gnome-terminal/"
+    profile_list_path = gtp + "global/profile_list"
+    profile_path = gtp + "profiles/%s" % name
     settings = {
         "use_theme_background": False,
         "use_theme_colors": False,
@@ -116,4 +118,8 @@ if __name__ == "__main__":
         "bold_color": rgb2hex16(colors["bold"]),
         "palette": palette(colors)
     }
+    profile_list = client.get_list(profile_list_path, gconf.VALUE_STRING)
+    if name not in profile_list:
+        profile_list.append(name)
+        client.set_list(profile_list_path, gconf.VALUE_STRING, profile_list)
     gconf_set(client, profile_path, settings)
