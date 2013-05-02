@@ -104,12 +104,13 @@ if __name__ == "__main__":
     mapping = read_mapping(mapping_file)
     file_contents = open(vim_file, 'r').read()
     colors = expand_mappings(file_contents, mapping)
-    name = splitext(basename(vim_file))[0]
+    name = re.sub("[^a-zA-Z]", '', splitext(basename(vim_file))[0])
     client = gconf.client_get_default()
     gtp = "/apps/gnome-terminal/"
     profile_list_path = gtp + "global/profile_list"
-    profile_path = gtp + "profiles/%s" % name
+    profile_path = gtp + "profiles/%s/" % name
     settings = {
+        "visible_name": name,
         "use_theme_background": False,
         "use_theme_colors": False,
         "bold_color_same_as_fg": False,
